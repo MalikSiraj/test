@@ -1,0 +1,28 @@
+# This configuration allows to accept all traffic from all users and show squid working. Replace the content with squid.conf
+
+# protect the cache manager, Safe_ports, SSL tunnels, then after the section marked as
+
+#
+# INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
+#
+
+
+acl whitelist dstdomain .whitelist.com .goodsite.com .partnerssite.com
+acl http proto http
+acl port_80 port 80
+acl port_443 port 443
+acl CONNECT method CONNECT
+acl authenticated_users proxy_auth REQUIRED
+
+# rules allowing non-authenticated users
+http_access allow http port_80 whitelist
+http_access allow CONNECT port_443 whitelist
+
+# rules allowing authenticated users
+http_access allow http port_80 authenticated_users
+http_access allow CONNECT port_443 authenticated_users
+
+# catch-all rule
+http_access deny all
+
+# The key is having all http_access rules that allow unauthenticated users placed before those http_access rules which require knowledge of the users' identity.
