@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # First, accept all traffic coming from the VPN:
 sudo iptables -A INPUT -s 192.168.30.1/24 -m state --state NEW -j ACCEPT
 sudo iptables -A OUTPUT -s 192.168.30.1/24 -m state --state NEW -j ACCEPT
