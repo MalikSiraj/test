@@ -19,3 +19,21 @@ sudo iptables -t nat -A POSTROUTING -s 192.168.30.1/24 -o eth0 -j MASQUERADE
 
 # forwarding traffice to squid from 192.168.30.1/24
 iptables -t nat -A PREROUTING -s 192.168.30.1/24 -p tcp -m multiport --dport 80 -j DNAT --to-destination 127.0.0.1:8080
+
+
+# forwarding HTTP traffic to e3guardian
+iptables -t nat -A PREROUTING -i tap_soft -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+iptables -t nat -A PREROUTING -i tap_soft -p tcp --dport 443 -j REDIRECT --to-port 8080
+
+
+ iptables -t nat -A POSTROUTING -s 192.168.7.0/24 -j SNAT --to-source 127.0.0.1
+ iptables -t nat -A POSTROUTING -s 192.168.7.0/24 -j SNAT --to-source 195.201.101.101
+ 
+ grep 'google.com' e2guardian.conf
+ 
+ ngrep -t '^(GET|POST) ' -d tap_soft
+ 
+ iptables -t nat -D PREROUTING 6
+ 
+iptables -t nat -A PREROUTING -i tap_soft -s 192.168.7.0/24 -p tcp -m multiport --dport 80 -j REDIRECT --to-port 8080
