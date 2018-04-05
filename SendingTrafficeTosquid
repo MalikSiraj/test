@@ -20,6 +20,9 @@ sudo iptables -t nat -A POSTROUTING -s 192.168.30.1/24 -o eth0 -j MASQUERADE
 # forwarding traffice to squid from 192.168.30.1/24
 iptables -t nat -A PREROUTING -s 192.168.30.1/24 -p tcp -m multiport --dport 80 -j DNAT --to-destination 127.0.0.1:8080
 
+# squid configuration here tap_soft is lan interface and eth0 is internet interface
+iptables -t nat -A PREROUTING -i tap_soft -p tcp --dport 80 -j DNAT --to 127.0.0.1:3128
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3128
 
 # forwarding HTTP traffic to e3guardian
 iptables -t nat -A PREROUTING -i tap_soft -p tcp --dport 80 -j REDIRECT --to-port 8080
@@ -33,6 +36,7 @@ iptables -t nat -A PREROUTING -i tap_soft -p tcp --dport 443 -j REDIRECT --to-po
  grep 'google.com' e2guardian.conf
  
  ngrep -t '^(GET|POST) ' -d tap_soft
+ wget http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/n/ngrep-1.47-0.1.a39256b.el7.x86_64.rpm
  
  iptables -t nat -D PREROUTING 6
  
