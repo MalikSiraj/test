@@ -1,0 +1,3 @@
+//tell information about CPU (numa)
+lscpu 
+cat /proc/meminfo
